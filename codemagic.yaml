@@ -1,9 +1,51 @@
+# codemagic.yaml
 workflows:
-
-  hello-world:
-
-    name: Hello world workflow
+  flutter-android-workflow:
+    name: Flutter Android Build Workflow
+    environment:
+      # Use the latest Flutter stable version
+      flutter: stable
+      # Enable caching for faster builds
+      cache:
+        cache_paths:
+          - ~/.pub-cache
+          - $HOME/.gradle/caches
 
     scripts:
+      # Install dependencies
+      - name: Install Flutter dependencies
+        script: |
+          flutter pub get
 
-        - echo "Hello World!"
+      # Run tests (optional)
+      - name: Run Flutter tests
+        script: |
+          flutter test
+
+      # Build the debug APK
+      - name: Build debug APK
+        script: |
+          flutter build apk --debug
+
+      # Build the release App Bundle (AAB)
+      - name: Build release App Bundle
+        script: |
+          flutter build appbundle --release
+
+    artifacts:
+      # Specify the files to save as build artifacts
+      - build/app/outputs/flutter-apk/app-debug.apk # Debug APK
+      - build/app/outputs/bundle/release/app-release.aab # Release App Bundle
+
+    publishing:
+      # Optional: Upload the release App Bundle to Google Play Console
+      google_play:
+        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS # Add your Google Play credentials here
+        track: internal # Use 'internal', 'alpha', 'beta', or 'production'
+
+      # Optional: Upload the debug APK to Firebase App Distribution
+      firebase_app_distribution:
+        android:
+          app_id: $FIREBASE_APP_ID # Add your Firebase App ID here
+          groups: testers # Specify tester groups in Firebase
+          service_credentials: $FIREBASE_SERVICE_ACCOUNT_CREDENTIALS # Add your Firebase credentials here
