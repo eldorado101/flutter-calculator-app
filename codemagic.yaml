@@ -6,12 +6,11 @@ workflows:
       # Use the latest Flutter stable version
       flutter: stable
       # Enable caching for faster builds
-      cache:
-        cache_paths:
-          - ~/.pub-cache
-          - $HOME/.gradle/caches
-
-    scripts:
+cache:
+  cache_paths:
+    - ~/.pub-cache
+    - $HOME/.gradle/caches
+scripts:
       # Install dependencies
       - name: Install Flutter dependencies
         script: |
@@ -31,13 +30,11 @@ workflows:
       - name: Build release App Bundle
         script: |
           flutter build appbundle --release
-
-    artifacts:
+artifacts:
       # Specify the files to save as build artifacts
       - build/app/outputs/flutter-apk/app-debug.apk # Debug APK
       - build/app/outputs/bundle/release/app-release.aab # Release App Bundle
-
-    publishing:
+publishing:
       # Optional: Upload the release App Bundle to Google Play Console
       google_play:
         credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS # Add your Google Play credentials here
